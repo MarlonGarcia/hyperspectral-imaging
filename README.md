@@ -1,2 +1,3 @@
-# hyperspectral-imaging
-Repository of Hyperspectral Imaging System
+# Hyperspectral Imaging
+
+This is the repository of Hyperspectral Imaging System.

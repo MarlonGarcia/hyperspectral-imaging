@@ -10,6 +10,7 @@ This code is dedicated to first steps processing a hyperspectarl image.
 import numpy as np
 import os
 import cv2
+import imfun
 import matplotlib.pyplot as plt
 
 class hipercube:
@@ -103,6 +104,36 @@ class hipercube:
             hist[n, :] = temp[0]
         # Returning full histogram
         return hist
+    
+    def points_spec(self, I):
+        '''
+        Choose points in image to print their spectrum
+
+        Parameters
+        ----------
+        I : 'numpy.ndarray'
+            Hyperspectral cube in (C, H, W) format, with C channels (images),
+            with a hight H and a width W.
+
+        Returns
+        -------
+        None.
+
+        '''
+        Irgb = self.get_rgb(I)
+        _, points = imfun.choos_points(Irgb[:,:,::-1], show=True)
+        
+        points_spec = np.ones((len(Irgb[:,...]), len(points[:,0])))
+        for n in range(0,len(points[:,0])):
+            # 
+            points_spec[:,n] = Irgb[:,points[n,1], points[n,0]]
+        # 
+        points_spec = np.asarray(points_spec)
+
+        
+        return 'True'
+        
+        
     
 
 

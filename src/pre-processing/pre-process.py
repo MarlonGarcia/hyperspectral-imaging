@@ -101,6 +101,7 @@ class hipercube:
             temp = np.histogram(I[n], bins = np.linspace(0, 2**pd, 2**pd+1))
             # from 'temp'  variable to 'hist' variable, in channel 'n'
             hist[n, :] = temp[0]
+        # Returning full histogram
         return hist
     
 
@@ -113,7 +114,7 @@ class hipercube:
 
 if __name__ == "__main__":
     # Defining directory. Use 'r' before the string
-    im_dir = r'C:\Users\marlo\My Drive\College\Biophotonics Lab\Research\Data\Imageamento Multiespectral\16) 15.12.20 - Teste 01 Café bom'
+    im_dir = r'H:\Shared drives\Imageamento Hiperespectral\Imagens\Imagens Multiespectrais\2021.06.01 - Lâmina Histlógica\Image1'
     # Defining a function to plot images
     
     def press(image):

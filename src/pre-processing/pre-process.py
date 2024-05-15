@@ -2,7 +2,7 @@
 """
 First Steps with Hyperspectral Images
 
-This code is dedicated to first steps processing a hyperspectarl image.
+This code is dedicated to the first steps of processing a hyperspectral image.
 
 """
 
@@ -13,7 +13,7 @@ import cv2
 import imfun
 import matplotlib.pyplot as plt
 
-class hipercube:
+class hypercube:
     
     def __init__(self, image_dir):
         '''
@@ -34,7 +34,7 @@ class hipercube:
         -------
         I : 'numpy.ndarray'
             Hyperspectral image in (C, H, W) format, with C channels (images),
-            with a hight H and a width W.
+            with a height of H and a width of W.
         '''
         # First, listing all the names of files in the image directory
         image_names = os.listdir(self.dir)
@@ -42,11 +42,32 @@ class hipercube:
         os.chdir(self.dir)
         # Creating the variable to contain the images
         I = []
-        # Adding all images with name 'name' from 'self.dir' directory to 'I'
+        # Adding all images from the 'self.dir' directory to 'I'
         for name in image_names:
             I.append(cv2.imread(name, cv2.IMREAD_GRAYSCALE))
-        # Returning the hiperspectral cube 'I'
+        # Returning the hyperspectral cube 'I'
         return np.asarray(I)
+    
+    def get_wavelengths(self, init=400, end=720, num=33):
+        '''
+        Getting the wavelengths of the hyperspectral image
+
+        Parameters
+        ----------
+        init : int, optional
+            The initial value of the wavelengths. The default is 400 (nm).
+        end : int, optional
+            The final value of the wavelengths. The default is 720 (nm).
+        num : int, optional
+            Number of wavelengths in the hypercube. The default is 33.
+
+        Returns
+        -------
+        'numpy.ndarray'
+            Vector with all wavelengths in the hyperspectral image.
+        '''
+        return np.linspace(init, end, num)
+        
     
     def get_rgb(self, I, w = [5, 15, 23]):
         '''
@@ -56,10 +77,10 @@ class hipercube:
         ----------
         I : 'numpy.ndarray'
             Hyperspectral cube in (C, H, W) format, with C channels (images),
-            with a hight H and a width W.
+            with a height of H and a width of W.
         w : 'list', optional
             A list with the position of the wavelengths to be considered as
-            red, green and blue, respectivelly. The default is [5, 15, 23].
+            red, green, and blue, respectively. The default is [5, 15, 23].
 
         Returns
         -------
@@ -82,7 +103,7 @@ class hipercube:
         ----------
         I : 'numpy.ndarray'
             Hyperspectral cube in (C, H, W) format, with C channels (images),
-            with a hight H and a width W.
+            with a height H and a width W.
         pd : 'int', optional
             Camera's pixel depth. The default is 8 bits.
 
@@ -107,13 +128,13 @@ class hipercube:
     
     def points_spec(self, I):
         '''
-        Choose points in image to print their spectrum
+        Choose points in the image to print their spectrum
 
         Parameters
         ----------
         I : 'numpy.ndarray'
             Hyperspectral cube in (C, H, W) format, with C channels (images),
-            with a hight H and a width W.
+            with a height of H and a width of W.
 
         Returns
         -------
@@ -145,24 +166,34 @@ class hipercube:
 
 if __name__ == "__main__":
     # Defining directory. Use 'r' before the string
-    im_dir = r'H:\Shared drives\Imageamento Hiperespectral\Imagens\Imagens Multiespectrais\2021.06.01 - Lâmina Histlógica\Image1'
-    # Defining a function to plot images
+    im_dir = r'G:\Drives compartilhados\Imageamento Hiperespectral\Imagens\Imagens Multiespectrais\2020.06.08 - R3 PPIX PS - Fígado camundongo'
     
-    def press(image):
+    # Defining a function to print images
+    def print_image(image):
         plt.subplots()
         plt.imshow(image)
         plt.axis('off')
         plt.tight_layout()
     
-    # Instanciating the hipercube class
-    cube = hipercube(im_dir)
-    I = cube.load()
-    Irgb = cube.get_rgb(I)
-    press(Irgb)
+    # Instanciating the hypercube class
+    cube = hypercube(im_dir)
     
+    # Loading the hypercube
+    I = cube.load()
+    
+    # Getting the wavelengths
+    w = cube.get_wavelengths()
+    
+    # Getting the RGB from the hypercube image
+    Irgb = cube.get_rgb(I)
+    print_image(Irgb)
+    
+    # Getting the histogram for each image channel
     hist = cube.hist(I)
+    # Printing histogram to each channel
     plt.subplots()
     for n in range(len(hist)):
-        plt.plot(hist[n, :])
+        plt.plot(hist[n, :], label=str(w[n])+' nm')
+    plt.legend()
     plt.show()
 

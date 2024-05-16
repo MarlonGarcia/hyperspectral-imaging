@@ -64,10 +64,41 @@ class hypercube:
         Returns
         -------
         'numpy.ndarray'
-            Vector with all wavelengths in the hyperspectral image.
+            Vector with all wavelengths of the hyperspectral image.
         '''
         return np.linspace(init, end, num)
+    
+    def normalize(self, I, Irgb):
+        '''
+        Normalizing image by a 'white' region.
+
+        Parameters
+        ----------
+        I : 'numpy.ndarray'
+            Hyperspectral cube in (C, H, W) format, with C channels (images),
+            with a height of H and a width of W.
+        Irgb : 'numpy.ndarray'
+            RGB image from the hypercube.
+
+        Returns
+        -------
+        I : 'numpy.ndarray'
+            Normalized hyperspectral cube, in (C, H, W) format.
+        '''
+        # Creating a null 'white' vector to add the ref. values to normalize.
+        white = np.zeros(len(I))
+        window_name = 'Choose the white region to normalize the image'
+        [Imask, points] = imfun.polyroi(Irgb, window_name = window_name)
+        Imask = Imask[:,:,0]
         
+        for n in range(len(I)):
+            temp = np.mean(I[n][Imask>0])
+            white[n] = temp.astype('uint8')
+            Itemp = I[n].astype('float')*(255/white[n])
+            I[n] = Itemp.astype('uint8')
+        
+        return I
+    
     
     def get_rgb(self, I, w = [5, 15, 23]):
         '''
@@ -153,20 +184,17 @@ class hypercube:
 
         
         return 'True'
-        
-        
-    
 
 
 
-
-
-#%% Testing the Code
-
+#%% Testing Code
 
 if __name__ == "__main__":
     # Defining directory. Use 'r' before the string
     im_dir = r'G:\Drives compartilhados\Imageamento Hiperespectral\Imagens\Imagens Multiespectrais\2020.06.08 - R3 PPIX PS - Fígado camundongo'
+    
+    # Closing all the images
+    plt.close('all')
     
     # Defining a function to print images
     def print_image(image):
@@ -197,3 +225,30 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
+
+
+
+#%%
+
+I = np.zeros([150, 150], dtype='uint8')
+Irgb = np.zeros([150, 150, 3], dtype='uint8')
+
+top_left = (50, 50)
+bottom_right = (100, 100)
+
+cv2.rectangle(I, top_left, bottom_right, 201, -1)
+
+I = np.array([I,I,I,I,I])
+
+np.shape(I)
+
+cv2.rectangle(Irgb, top_left, bottom_right, (0, 201, 0), -1)
+
+plt.subplots()
+plt.imshow(Irgb)
+
+
+I = cube.normalize(I, Irgb)
+
+plt.subplots()
+plt.imshow(I[0,:,:])

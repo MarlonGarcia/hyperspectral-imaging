@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-First Steps with Hyperspectral Images
+First Steps - Pre-Processing a Hyperspectral Images
 
 This code is dedicated to the first steps of processing a hyperspectral image.
 
@@ -191,7 +191,7 @@ class hypercube:
 
 if __name__ == "__main__":
     # Defining directory. Use 'r' before the string
-    im_dir = r'G:\Drives compartilhados\Imageamento Hiperespectral\Imagens\Imagens Multiespectrais\2020.06.08 - R3 PPIX PS - Fígado camundongo'
+    im_dir = r'H:\Shared drives\Imageamento Hiperespectral\Imagens\Imagens Multiespectrais\2020.06.08 - R3 PPIX PS - Fígado camundongo'
     
     # Closing all the images
     plt.close('all')
@@ -226,29 +226,3 @@ if __name__ == "__main__":
     plt.show()
 
 
-
-
-#%%
-
-I = np.zeros([150, 150], dtype='uint8')
-Irgb = np.zeros([150, 150, 3], dtype='uint8')
-
-top_left = (50, 50)
-bottom_right = (100, 100)
-
-cv2.rectangle(I, top_left, bottom_right, 201, -1)
-
-I = np.array([I,I,I,I,I])
-
-np.shape(I)
-
-cv2.rectangle(Irgb, top_left, bottom_right, (0, 201, 0), -1)
-
-plt.subplots()
-plt.imshow(Irgb)
-
-
-I = cube.normalize(I, Irgb)
-
-plt.subplots()
-plt.imshow(I[0,:,:])
